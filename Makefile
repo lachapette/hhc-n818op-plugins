@@ -6,7 +6,7 @@
 # Variables
 # ==================================================================================================
 
-SRC_FOLDERS:=daemon_hhc_n818op tests
+SRC_FOLDERS:=plugins tests
 PACKAGE_NAME=hhc_n818op_plugins
 TEST:=tests
 

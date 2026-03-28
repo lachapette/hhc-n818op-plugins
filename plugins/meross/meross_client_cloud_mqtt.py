@@ -5,13 +5,18 @@ from pathlib import Path
 from typing import Dict, Optional
 
 # Third Party Libraries
-from hhc_n818op_standalone.relay_client import PluginMQTT
 from meross_iot.http_api import MerossHttpClient
 from meross_iot.manager import MerossManager
 from meross_iot.model.credentials import MerossCloudCreds
 
-# Plugins devices IOT for HHC_N818OP Client
-from daemon_hhc_n818op.plugins.meross import MEROSS_FOLDER
+try:
+    # Third Party Libraries
+    from daemon_hhc_n818op.relay_client import PluginMQTT
+except ImportError:
+    # Third Party Libraries
+    from daemon_hhc_n818op.hhc_n818op.relay_client import PluginMQTT
+
+MEROSS_FOLDER = Path(__file__).parent
 
 MFA_CODE = "meross_mfa_code"
 PASSWORD = "meross_password"
@@ -27,7 +32,7 @@ TOKEN = "token"
 MEROSS_PROFILE = "meross_profile.json"
 MEROSS_REGISTRY_DUMP = "meross_registry.json"
 MEROSS_CLOUD_CREDS = "meross_cloud_credentials.json"
-UTF8 = "utf-8" ""
+UTF8 = "utf-8"
 
 
 class PluginMeross(PluginMQTT):
