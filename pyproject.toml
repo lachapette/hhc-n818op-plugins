@@ -8,7 +8,7 @@ readme = "README.md"
 license = "GPL-3.0-only"
 
 dependencies = [
-    "daemon-hhc-n818op",
+    "daemon-hhc-n818op>=0.1.1",
     "meross-iot",
 ]
 
