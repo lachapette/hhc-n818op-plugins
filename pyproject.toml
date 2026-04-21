@@ -3,7 +3,7 @@ name = "hhc-n818op-plugins"
 version = "0.0.0"
 description = "Plugins devices IOT for Server HHC-N818OP Standalone with Python"
 authors = [{ name = "Yannick LIDIE", email = "yannick@lidie.fr" }]
-requires-python = ">=3.10,<3.14"
+requires-python = ">=3.10"
 readme = "README.md"
 license = "GPL-3.0-only"
 

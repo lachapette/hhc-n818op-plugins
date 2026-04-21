@@ -214,7 +214,7 @@ clean-mypy:
 
 sc: style check
 
-sct: style check test
+sct: style checks test
 
 # ==================================================================================================
 # Test targets

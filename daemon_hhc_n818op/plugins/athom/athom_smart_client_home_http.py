@@ -6,7 +6,7 @@ import subprocess
 
 # Third Party Libraries
 import requests
-from hhc_n818op.relay_client import PluginHTTP
+from hhc_n818op_standalone.relay_client import PluginHTTP
 
 PUMP_RELAY_1 = "relay_1"
 PUMP_STATUS_DATA = "data"

@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Dict, Optional
 
 # Third Party Libraries
-from hhc_n818op.relay_client import PluginMQTT
+from hhc_n818op_standalone.relay_client import PluginMQTT
 from meross_iot.http_api import MerossHttpClient
 from meross_iot.manager import MerossManager
 from meross_iot.model.credentials import MerossCloudCreds
