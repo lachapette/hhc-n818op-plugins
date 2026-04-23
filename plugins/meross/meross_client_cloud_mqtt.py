@@ -11,10 +11,10 @@ from meross_iot.model.credentials import MerossCloudCreds
 
 try:
     # Third Party Libraries
-    from daemon_hhc_n818op.relay_client import PluginMQTT
+    from daemon_hhc_n818op.relay_plugins import PluginMQTT
 except ImportError:
     # Third Party Libraries
-    from daemon_hhc_n818op.hhc_n818op.relay_client import PluginMQTT
+    from daemon_hhc_n818op.hhc_n818op.relay_plugins import PluginMQTT
 
 MEROSS_FOLDER = Path(__file__).parent
 
@@ -190,7 +190,7 @@ class PluginMeross(PluginMQTT):
             await meross_device.async_turn_off(channel=0)
             logging.info(f"{meross_device.name} is turned off.")
 
-    async def toggle_on_off(self, device_name: str, on_off_forced: bool) -> bool:
+    async def toggle_on_off(self, device_name: str, on_off_forced: bool = False) -> bool:
         """
         Toggles a Meross device on or off.
 
