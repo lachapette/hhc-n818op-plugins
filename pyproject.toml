@@ -13,8 +13,8 @@ dependencies = [
 ]
 
 [project.entry-points."daemon_hhc_n818op.plugins"]
-meross = "plugins.meross:Plugin"
-athom = "plugins.athom:Plugin"
+meross = "daemon_hhc_n818op.plugins.meross:Plugin"
+athom = "daemon_hhc_n818op.plugins.athom:Plugin"
 
 [dependency-groups]
 dev = [
@@ -86,17 +86,18 @@ dev = [
 allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
-packages = ["plugins"]
-exclude = [
-    "tests/*"
-]
+packages = ["daemon_hhc_n818op.plugins"]
+directory = "src"
 
 #[build-system]
 #requires = ["hatchling"]
 #build-backend = "hatchling.build"
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
+requires = ["setuptools>=61.0.0", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+zip-safe = false
 
 [tool.uv]
 cache-dir = ".uv-cache"
