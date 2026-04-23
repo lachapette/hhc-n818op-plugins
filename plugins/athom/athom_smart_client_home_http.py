@@ -9,10 +9,10 @@ import requests
 
 try:
     # Third Party Libraries
-    from daemon_hhc_n818op.relay_client import PluginHTTP
+    from daemon_hhc_n818op.relay_plugins import PluginHTTP
 except ImportError:
     # Third Party Libraries
-    from daemon_hhc_n818op.hhc_n818op.relay_client import PluginHTTP
+    from daemon_hhc_n818op.hhc_n818op.relay_plugins import PluginHTTP
 
 PUMP_RELAY_1 = "relay_1"
 PUMP_STATUS_DATA = "data"
