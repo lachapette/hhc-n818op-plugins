@@ -77,33 +77,43 @@ class PluginMeross(PluginMQTT):
         Returns:
             MerossManager: The Meross manager instance.
         """
-        manager: MerossManager
+        manager: MerossManager = None
 
         if Path(MEROSS_CONFIG_FOLDER, MEROSS_REGISTRY_DUMP).exists() and Path(MEROSS_CONFIG_FOLDER, MEROSS_CLOUD_CREDS).exists():
             creds = json.load(open(Path(MEROSS_CONFIG_FOLDER, MEROSS_CLOUD_CREDS), "r"))
-            meross_cloud_creds = MerossCloudCreds(creds[TOKEN], creds[KEY], creds[USER_ID], creds[USER_EMAIL], creds[ISSUED_ON], creds[DOMAIN], creds[MQTT_DOMAIN])
-            http_api_client = MerossHttpClient(meross_cloud_creds)
-            # Setup and start the device manager
-            manager = MerossManager(http_client=http_api_client)
-            await manager.async_init()
-            manager.load_devices_from_dump(Path(MEROSS_CONFIG_FOLDER, MEROSS_REGISTRY_DUMP))
-            logging.info("Meross registry dump loaded.")
+            if all([creds[TOKEN], creds[KEY], creds[USER_ID], creds[USER_EMAIL]]):
+                meross_cloud_creds = MerossCloudCreds(creds[TOKEN], creds[KEY], creds[USER_ID], creds[USER_EMAIL], creds[ISSUED_ON], creds[DOMAIN], creds[MQTT_DOMAIN])
+                http_api_client = MerossHttpClient(meross_cloud_creds)
+                # Setup and start the device manager
+                manager = MerossManager(http_client=http_api_client)
+                await manager.async_init()
+                manager.load_devices_from_dump(Path(MEROSS_CONFIG_FOLDER, MEROSS_REGISTRY_DUMP))
+                logging.info("Meross registry dump loaded.")
+            else:
+                manager = await self.__build_new_credentials(manager)
         else:
-            profile_creds = json.load(open(Path(MEROSS_CONFIG_FOLDER, MEROSS_PROFILE), "r"))
-            # Setup the HTTP client API from user-password
-            http_api_client = await MerossHttpClient.async_from_user_password(profile_creds[URL_REGION], profile_creds[LOGIN], profile_creds[PASSWORD], mfa_code=profile_creds[MFA_CODE])
+            manager = await self.__build_new_credentials(manager)
 
-            # Setup and start the device manager
-            manager = MerossManager(http_client=http_api_client)
-            await manager.async_init()
+        return manager
 
-            # Discover devices.
-            await manager.async_device_discovery()
-            # Dump the registry information into a test.dump file
-            manager.dump_device_registry(Path(MEROSS_CONFIG_FOLDER, MEROSS_REGISTRY_DUMP))
-            creds = open(MEROSS_CLOUD_CREDS, "w+")
-            creds.write(Path(MEROSS_CONFIG_FOLDER, str(http_api_client.cloud_credentials)).as_posix())
+    @staticmethod
+    async def __build_new_credentials(manager: MerossManager) -> MerossManager:
+        profile_creds = json.load(open(Path(MEROSS_CONFIG_FOLDER, MEROSS_PROFILE), "r"))
+        # Setup the HTTP client API from user-password
+        http_api_client = await MerossHttpClient.async_from_user_password(profile_creds[URL_REGION], profile_creds[LOGIN], profile_creds[PASSWORD], mfa_code=profile_creds[MFA_CODE])
 
+        # Setup and start the device manager
+        manager = MerossManager(http_client=http_api_client)
+        await manager.async_init()
+
+        # Discover devices.
+        await manager.async_device_discovery()
+        # Dump the registry information into a test.dump file
+        meross_device_registry_file = Path(MEROSS_CONFIG_FOLDER, MEROSS_REGISTRY_DUMP)
+        meross_device_registry_credentials_file = Path(MEROSS_CONFIG_FOLDER, str(http_api_client.cloud_credentials))
+        manager.dump_device_registry(meross_device_registry_file)
+        creds = open(meross_device_registry_file, "w+")
+        creds.write(meross_device_registry_credentials_file.as_posix())
         return manager
 
     async def disconnect(self):
