@@ -17,7 +17,7 @@ except ImportError:
     from daemon_hhc_n818op.hhc_n818op.relay_plugins import PluginMQTT
 
 MEROSS_FOLDER = Path(__file__).parent
-
+MEROSS_CONFIG_FOLDER = Path(MEROSS_FOLDER, "config")
 MFA_CODE = "meross_mfa_code"
 PASSWORD = "meross_password"
 LOGIN = "meross_login"
@@ -79,17 +79,17 @@ class PluginMeross(PluginMQTT):
         """
         manager: MerossManager
 
-        if Path(MEROSS_FOLDER, MEROSS_REGISTRY_DUMP).exists() and Path(MEROSS_FOLDER, MEROSS_CLOUD_CREDS).exists():
-            creds = json.load(open(Path(MEROSS_FOLDER, MEROSS_CLOUD_CREDS), "r"))
+        if Path(MEROSS_CONFIG_FOLDER, MEROSS_REGISTRY_DUMP).exists() and Path(MEROSS_CONFIG_FOLDER, MEROSS_CLOUD_CREDS).exists():
+            creds = json.load(open(Path(MEROSS_CONFIG_FOLDER, MEROSS_CLOUD_CREDS), "r"))
             meross_cloud_creds = MerossCloudCreds(creds[TOKEN], creds[KEY], creds[USER_ID], creds[USER_EMAIL], creds[ISSUED_ON], creds[DOMAIN], creds[MQTT_DOMAIN])
             http_api_client = MerossHttpClient(meross_cloud_creds)
             # Setup and start the device manager
             manager = MerossManager(http_client=http_api_client)
             await manager.async_init()
-            manager.load_devices_from_dump(Path(MEROSS_FOLDER, MEROSS_REGISTRY_DUMP))
+            manager.load_devices_from_dump(Path(MEROSS_CONFIG_FOLDER, MEROSS_REGISTRY_DUMP))
             logging.info("Meross registry dump loaded.")
         else:
-            profile_creds = json.load(open(Path(MEROSS_FOLDER, MEROSS_PROFILE), "r"))
+            profile_creds = json.load(open(Path(MEROSS_CONFIG_FOLDER, MEROSS_PROFILE), "r"))
             # Setup the HTTP client API from user-password
             http_api_client = await MerossHttpClient.async_from_user_password(profile_creds[URL_REGION], profile_creds[LOGIN], profile_creds[PASSWORD], mfa_code=profile_creds[MFA_CODE])
 
@@ -100,9 +100,9 @@ class PluginMeross(PluginMQTT):
             # Discover devices.
             await manager.async_device_discovery()
             # Dump the registry information into a test.dump file
-            manager.dump_device_registry(Path(MEROSS_FOLDER, MEROSS_REGISTRY_DUMP))
+            manager.dump_device_registry(Path(MEROSS_CONFIG_FOLDER, MEROSS_REGISTRY_DUMP))
             creds = open(MEROSS_CLOUD_CREDS, "w+")
-            creds.write(Path(MEROSS_FOLDER, str(http_api_client.cloud_credentials)).as_posix())
+            creds.write(Path(MEROSS_CONFIG_FOLDER, str(http_api_client.cloud_credentials)).as_posix())
 
         return manager
 
