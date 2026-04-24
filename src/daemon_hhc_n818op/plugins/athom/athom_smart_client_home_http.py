@@ -3,6 +3,7 @@ import json
 import logging
 import shutil
 import subprocess
+from pathlib import Path
 
 # Third Party Libraries
 import requests
@@ -14,6 +15,7 @@ except ImportError:
     # Third Party Libraries
     from daemon_hhc_n818op.hhc_n818op.relay_plugins import PluginHTTP
 
+ATHOM_FOLDER = Path(__file__).parent
 PUMP_RELAY_1 = "relay_1"
 PUMP_STATUS_DATA = "data"
 
