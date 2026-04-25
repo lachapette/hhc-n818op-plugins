@@ -16,8 +16,6 @@ except ImportError:
     # Third Party Libraries
     from daemon_hhc_n818op.hhc_n818op.relay_plugins import PluginMQTT
 
-MEROSS_FOLDER = Path(__file__).parent
-MEROSS_CONFIG_FOLDER = Path(MEROSS_FOLDER, "config")
 MFA_CODE = "meross_mfa_code"
 PASSWORD = "meross_password"
 LOGIN = "meross_login"
@@ -33,9 +31,13 @@ MEROSS_PROFILE = "meross_profile.json"
 MEROSS_REGISTRY_DUMP = "meross_registry.json"
 MEROSS_CLOUD_CREDS = "meross_cloud_credentials.json"
 UTF8 = "utf-8"
+
+MEROSS_FOLDER = Path(__file__).parent
+MEROSS_CONFIG_FOLDER = Path(MEROSS_FOLDER, "config")
+MEROSS_CREDENTIALS_FOLDER = Path("/tmp")
 meross_user_config_file = Path(MEROSS_CONFIG_FOLDER, MEROSS_PROFILE)
-meross_cloud_credentials_file = Path(MEROSS_CONFIG_FOLDER, MEROSS_CLOUD_CREDS)
-meross_device_registry_file = Path(MEROSS_CONFIG_FOLDER, MEROSS_REGISTRY_DUMP)
+meross_cloud_credentials_file = Path(MEROSS_CREDENTIALS_FOLDER, MEROSS_CLOUD_CREDS)
+meross_device_registry_file = Path(MEROSS_CREDENTIALS_FOLDER, MEROSS_REGISTRY_DUMP)
 
 
 class PluginMeross(PluginMQTT):
