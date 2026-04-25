@@ -16,6 +16,7 @@ except ImportError:
     # Third Party Libraries
     from daemon_hhc_n818op.hhc_n818op.relay_plugins import PluginMQTT
 
+MEROSS_CREDENTIALS_FOLDER = "meross_credentials_folder"
 MFA_CODE = "meross_mfa_code"
 PASSWORD = "meross_password"
 LOGIN = "meross_login"
@@ -34,10 +35,11 @@ UTF8 = "utf-8"
 
 MEROSS_FOLDER = Path(__file__).parent
 MEROSS_CONFIG_FOLDER = Path(MEROSS_FOLDER, "config")
-MEROSS_CREDENTIALS_FOLDER = Path("/tmp")
 meross_user_config_file = Path(MEROSS_CONFIG_FOLDER, MEROSS_PROFILE)
-meross_cloud_credentials_file = Path(MEROSS_CREDENTIALS_FOLDER, MEROSS_CLOUD_CREDS)
-meross_device_registry_file = Path(MEROSS_CREDENTIALS_FOLDER, MEROSS_REGISTRY_DUMP)
+
+profile_creds = json.load(open(meross_user_config_file, "r"))
+meross_cloud_credentials_file = Path(profile_creds[MEROSS_CREDENTIALS_FOLDER], MEROSS_CLOUD_CREDS)
+meross_device_registry_file = Path(profile_creds[MEROSS_CREDENTIALS_FOLDER], MEROSS_REGISTRY_DUMP)
 
 
 class PluginMeross(PluginMQTT):
@@ -103,7 +105,6 @@ class PluginMeross(PluginMQTT):
 
     @staticmethod
     async def __build_new_credentials(manager: MerossManager) -> MerossManager:
-        profile_creds = json.load(open(meross_user_config_file, "r"))
         # Setup the HTTP client API from user-password
         http_api_client = await MerossHttpClient.async_from_user_password(profile_creds[URL_REGION], profile_creds[LOGIN], profile_creds[PASSWORD], mfa_code=profile_creds[MFA_CODE])
 

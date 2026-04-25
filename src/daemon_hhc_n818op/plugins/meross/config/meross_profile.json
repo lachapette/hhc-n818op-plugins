@@ -2,5 +2,6 @@
   "meross_login": "",
   "meross_password": "",
   "meross_url_region": "https://iotx-eu.meross.com",
-  "meross_mfa_code": ""
+  "meross_mfa_code": "",
+  "meross_credentials_storage_folder": "/tmp"
 }
