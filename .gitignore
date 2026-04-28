@@ -114,3 +114,6 @@ log/
 
 # OpenAI
 config/
+
+# Avoid updating secrects in GitHub
+config/meross_profile.json

@@ -138,12 +138,18 @@ class PluginMeross(PluginMQTT):
         Returns:
             bool: True if the device is on, False otherwise.
         """
-        is_switched_on = False
-        devices = self.manager.find_devices(device_name=device_name)
-        for meross_device in devices:
-            await meross_device.async_update()
-            is_switched_on = self._device_is_on(meross_device)
-        return is_switched_on
+        try:
+            is_switched_on = False
+            devices = self.manager.find_devices(device_name=device_name)
+            if not devices:
+                raise ValueError(f"Device '{device_name}' not found in connected Meross devices")
+            for meross_device in devices:
+                await meross_device.async_update()
+                is_switched_on = self._device_is_on(meross_device)
+            return is_switched_on
+        except Exception as e:
+            logging.error(f"Error getting status for device '{device_name}': {e}")
+            return False
 
     async def status_all(self) -> Dict[str, bool]:
         """
@@ -180,14 +186,19 @@ class PluginMeross(PluginMQTT):
         Args:
             device_name (str): The name of the device to switch on.
         """
-        devices = self.manager.find_devices(device_name=device_name)
-        for meross_device in devices:
-            logging.info(f"- {meross_device.name} ({meross_device.type}): {meross_device.online_status}")
-            # The first time we play with a device, we must update its status
-            await meross_device.async_update()
-            logging.info(f"Turning on {meross_device.name}...")
-            await meross_device.async_turn_on(channel=0)
-            logging.info(f"{meross_device.name} is turned on.")
+        try:
+            devices = self.manager.find_devices(device_name=device_name)
+            if not devices:
+                raise ValueError(f"Device '{device_name}' not found in connected Meross devices")
+            for meross_device in devices:
+                logging.info(f"- {meross_device.name} ({meross_device.type}): {meross_device.online_status}")
+                # The first time we play with a device, we must update its status
+                await meross_device.async_update()
+                logging.info(f"Turning on {meross_device.name}...")
+                await meross_device.async_turn_on(channel=0)
+                logging.info(f"{meross_device.name} is turned on.")
+        except Exception as e:
+            logging.error(f"Error switching on device '{device_name}': {e}")
 
     async def switch_off(self, device_name: str):
         """
@@ -196,15 +207,20 @@ class PluginMeross(PluginMQTT):
         Args:
             device_name (str): The name of the device to switch off.
         """
-        devices = self.manager.find_devices(device_name=device_name)
-        for meross_device in devices:
-            logging.info(f"- {meross_device.name} ({meross_device.type}): {meross_device.online_status}")
-            # The first time we play with a device, we must update its status
-            await meross_device.async_update()
-            # We can now start playing with that
-            logging.info(f"Turning off {meross_device.name}...")
-            await meross_device.async_turn_off(channel=0)
-            logging.info(f"{meross_device.name} is turned off.")
+        try:
+            devices = self.manager.find_devices(device_name=device_name)
+            if not devices:
+                raise ValueError(f"Device '{device_name}' not found in connected Meross devices")
+            for meross_device in devices:
+                logging.info(f"- {meross_device.name} ({meross_device.type}): {meross_device.online_status}")
+                # The first time we play with a device, we must update its status
+                await meross_device.async_update()
+                # We can now start playing with that
+                logging.info(f"Turning off {meross_device.name}...")
+                await meross_device.async_turn_off(channel=0)
+                logging.info(f"{meross_device.name} is turned off.")
+        except Exception as e:
+            logging.error(f"Error switching off device '{device_name}': {e}")
 
     async def toggle_on_off(self, device_name: str, on_off_forced: bool = False) -> bool:
         """
@@ -217,29 +233,35 @@ class PluginMeross(PluginMQTT):
         Returns:
             bool: True if the device is on, False otherwise.
         """
-        is_switched_on = False
-        devices = self.manager.find_devices(device_name=device_name)
-        for meross_device in devices:
-            await meross_device.async_update()
+        try:
+            is_switched_on = False
+            devices = self.manager.find_devices(device_name=device_name)
+            if not devices:
+                raise ValueError(f"Device '{device_name}' not found in connected Meross devices")
+            for meross_device in devices:
+                await meross_device.async_update()
 
-            if on_off_forced:
-                await meross_device.async_turn_on(channel=0)
-                is_switched_on = True
-                logging.info(f"{meross_device.name} is switched on.")
-                continue
+                if on_off_forced:
+                    await meross_device.async_turn_on(channel=0)
+                    is_switched_on = True
+                    logging.info(f"{meross_device.name} is switched on.")
+                    continue
 
-            if not on_off_forced:
-                await meross_device.async_turn_off(channel=0)
-                is_switched_on = False
-                logging.info(f"{meross_device.name} is switched off.")
-                continue
+                if not on_off_forced:
+                    await meross_device.async_turn_off(channel=0)
+                    is_switched_on = False
+                    logging.info(f"{meross_device.name} is switched off.")
+                    continue
 
-            if self._device_is_on(meross_device):
-                await meross_device.async_turn_off(channel=0)
-                is_switched_on = False
-                logging.info(f"{meross_device.name} is turned off.")
-            else:
-                await meross_device.async_turn_on(channel=0)
-                is_switched_on = True
-                logging.info(f"{meross_device.name} is turned on.")
-        return is_switched_on
+                if self._device_is_on(meross_device):
+                    await meross_device.async_turn_off(channel=0)
+                    is_switched_on = False
+                    logging.info(f"{meross_device.name} is turned off.")
+                else:
+                    await meross_device.async_turn_on(channel=0)
+                    is_switched_on = True
+                    logging.info(f"{meross_device.name} is turned on.")
+            return is_switched_on
+        except Exception as e:
+            logging.error(f"Error toggling device '{device_name}': {e}")
+            return False
