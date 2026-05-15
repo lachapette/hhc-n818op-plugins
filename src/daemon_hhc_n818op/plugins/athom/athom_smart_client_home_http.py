@@ -28,6 +28,8 @@ class PluginAthomSmartHome(PluginHTTP):
     including checking device status and toggling device state.
     """
 
+    HTTP = "http://"
+
     def __init__(self, host: str, port: int):
         """
         Initializes the PluginAthomSmartHome instance.
@@ -39,7 +41,7 @@ class PluginAthomSmartHome(PluginHTTP):
         super().__init__()
         self.host = host
         self.port = port
-        self.url = f"http://{self.host}:{self.port}/relay_do"
+        self.url = f"{PluginAthomSmartHome.HTTP}{self.host}:{self.port}/relay_do"
         self.enabled = True
 
     @staticmethod

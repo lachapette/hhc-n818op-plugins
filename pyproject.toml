@@ -15,6 +15,7 @@ dependencies = [
 [project.entry-points."daemon_hhc_n818op.plugins"]
 meross = "daemon_hhc_n818op.plugins.meross:Plugin"
 athom = "daemon_hhc_n818op.plugins.athom:Plugin"
+sonoff = "daemon_hhc_n818op.plugins.sonoff:Plugin"
 
 [dependency-groups]
 dev = [
