@@ -8,13 +8,14 @@ readme = "README.md"
 license = "GPL-3.0-only"
 
 dependencies = [
-    "daemon-hhc-n818op>=0.1.3",
+    "daemon-hhc-n818op>=0.5.0",
     "meross-iot",
 ]
 
 [project.entry-points."daemon_hhc_n818op.plugins"]
 meross = "daemon_hhc_n818op.plugins.meross:Plugin"
 athom = "daemon_hhc_n818op.plugins.athom:Plugin"
+sonoff = "daemon_hhc_n818op.plugins.sonoff:Plugin"
 
 [dependency-groups]
 dev = [

@@ -1,0 +1,7 @@
+{
+  "sonoff_host": "",
+  "sonoff_port": 80,
+  "sonoff_username": "",
+  "sonoff_password": "",
+  "sonoff_device_topic": "sonoff_4chpro"
+}
